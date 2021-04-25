@@ -21,7 +21,7 @@ export function Login({navigation}) {
       <View style={styles.container}>
           <Heading style={styles.title}>Авторизация</Heading>
           <ErrorMessage error={errors}/>
-          <Input style={styles.input} placeholder={'Email'} keyboardType={'email-address'} value={email} onChangeText={setEmail}/>
+          <Input style={styles.input} placeholder={'Email'} keyboardType={'email-address'} value={email} onChangeText={setEmail} autoCapitalize={'none'}/>
           <Input style={styles.input} placeholder={'Пароль'} keyboardType={'default'} secureTextEntry value={password} onChangeText={setPassword}/>
           <FormButton title={'Войти'} style={styles.loginButton} onPress={async () => {
             try{

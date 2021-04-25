@@ -9,52 +9,14 @@ import {AuthStakNavigator} from './src/navigators/AuthStakNavigator'
 import {AuthContext} from './src/context/AuthContext'
 import { createAction } from './src/config/createAction';
 import { MainStakNavigator } from './src/navigators/MainStackNavigator';
+import { useAuth } from './src/hooks/UseAuth';
+import { UserContext } from './src/context/UserContext';
 
 
 const RootStack = createStackNavigator();
 
 export default function App() {
-  const [state, dispatch] = React.useReducer((state, action)=>{
-    switch (action.type) {
-      case 'SET_USER':
-        return {
-          ...state,
-          user: {...action.payload}
-        };
-      default:
-        return state;
-    }
-  },{
-    user: undefined
-  })
-
-  const auth = React.useMemo(() => ({
-    login: async (email, password) => {
-      const {data} = await axios.post(BASE_URL+'rest-auth/login/',{
-        'email':email,
-        'password': password
-      })
-      const user = {
-        token:data.key,
-      }
-      dispatch(createAction('SET_USER', user))
-    },
-    logout: () => {
-      console.log('logout');
-    },
-    registration: async (firstName, secondName, lastName, email, password) => {
-      await axios.post(BASE_URL+'rest-auth/registration/', {
-        'email':email,
-        'password1':password,
-        'password2': password,
-        'first_name': firstName,
-        'second_name': secondName,
-        'last_name': lastName
-      });
-    }
-  }),
-  [],
-  );
+  const {auth, state} = useAuth();
 
   return (
     <AuthContext.Provider value={auth}>
@@ -63,9 +25,17 @@ export default function App() {
           headerShown:false,
           animationEnable:false
           }}>
-          {
-            state.user ? <RootStack.Screen  name={'MainStack'} component={MainStakNavigator}/> :
+          {state.user ? (
+            <RootStack.Screen  name={'MainStack'}>
+              {()=>(
+                <UserContext.Provider value={state.user}>
+                  <MainStakNavigator />
+                </UserContext.Provider>
+              )}
+            </RootStack.Screen>
+            ) : (
             <RootStack.Screen  name={'AuthStack'} component={AuthStakNavigator}/>
+            )
           }
         </RootStack.Navigator>
       </NavigationContainer>

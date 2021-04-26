@@ -1,9 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import SecureStorage from 'react-native-secure-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {BASE_URL} from '../config/index'
 import { createAction } from '../config/createAction';
+import { sleep } from '../untils/sleep';
 
 
 export function useAuth() {
@@ -12,6 +13,7 @@ const [state, dispatch] = React.useReducer((state, action)=>{
       case 'SET_USER':
         return {
           ...state,
+          loading: false,
           user: {...action.payload}
         };
       case 'REMOVE_USER':
@@ -19,11 +21,17 @@ const [state, dispatch] = React.useReducer((state, action)=>{
           ...state,
           user: undefined
         };
+      case 'SET_LOADING':
+        return {
+          ...state,
+          loading: action.payload,
+        }
       default:
         return state;
     }
   },{
-    user: undefined
+    user: undefined,
+    loading: true
   })
 
   const auth = React.useMemo(() => ({
@@ -35,11 +43,11 @@ const [state, dispatch] = React.useReducer((state, action)=>{
       const user = {
         token:data.key,
       }
-      await SecureStorage.setItem('user')
+      await AsyncStorage.setItem('user', JSON.stringify(user))
       dispatch(createAction('SET_USER', user));
     },
     logout: async () => {
-      await SecureStorage.removeItem('user')
+      await AsyncStorage.removeItem('user')
       dispatch(createAction('REMOVE_USER'))
     },
     registration: async (firstName, secondName, lastName, email, password) => {
@@ -56,11 +64,15 @@ const [state, dispatch] = React.useReducer((state, action)=>{
   [],
   );
   React.useEffect(()=>{
-    SecureStorage.getItem('user').then( user => {
-      console.log('user', user);
-      if (user){
-        dispatch(createAction('SET_USER', JSON.parse(user)));
-      }
+    sleep(1000).then(()=>{
+      AsyncStorage.getItem('user').then( user => {
+        console.log('user', user);
+        if (user !== null){
+          dispatch(createAction('SET_USER', JSON.parse(user)));
+        } else {
+          dispatch(createAction('SET_LOADING', false))
+        }
+    })
     });
   },[]);
   return {auth, state};

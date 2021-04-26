@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import SecureStorage from 'react-native-secure-storage'
 
 import {BASE_URL} from '../config/index'
 import { createAction } from '../config/createAction';
@@ -34,9 +35,11 @@ const [state, dispatch] = React.useReducer((state, action)=>{
       const user = {
         token:data.key,
       }
-      dispatch(createAction('SET_USER', user))
+      await SecureStorage.setItem('user')
+      dispatch(createAction('SET_USER', user));
     },
-    logout: () => {
+    logout: async () => {
+      await SecureStorage.removeItem('user')
       dispatch(createAction('REMOVE_USER'))
     },
     registration: async (firstName, secondName, lastName, email, password) => {
@@ -52,5 +55,13 @@ const [state, dispatch] = React.useReducer((state, action)=>{
   }),
   [],
   );
+  React.useEffect(()=>{
+    SecureStorage.getItem('user').then( user => {
+      console.log('user', user);
+      if (user){
+        dispatch(createAction('SET_USER', JSON.parse(user)));
+      }
+    });
+  },[]);
   return {auth, state};
 }

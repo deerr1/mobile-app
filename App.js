@@ -9,7 +9,7 @@ import {AuthStakNavigator} from './src/navigators/AuthStakNavigator'
 import {AuthContext} from './src/context/AuthContext'
 import { createAction } from './src/config/createAction';
 import { MainStakNavigator } from './src/navigators/MainStackNavigator';
-import { useAuth } from './src/hooks/UseAuth';
+import  { useAuth }  from './src/hooks/useAuth';
 import { UserContext } from './src/context/UserContext';
 
 
@@ -17,7 +17,6 @@ const RootStack = createStackNavigator();
 
 export default function App() {
   const {auth, state} = useAuth();
-
   return (
     <AuthContext.Provider value={auth}>
       <NavigationContainer>

@@ -5,10 +5,9 @@ import {MainPage} from '../views/MainPage'
 import {AnaliticPage} from '../views/AnaliticPage'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { AuthContext } from '../context/AuthContext';
+import { HistoryPage } from '../views/HistoryPage';
 
 const MainDrawer = createDrawerNavigator();
-
-
 
 export function MainStakNavigator({navigation}) {
   const {logout} = React.useContext(AuthContext);
@@ -26,7 +25,17 @@ export function MainStakNavigator({navigation}) {
                 size={size}
               />
             )}
-            onPress={() => navigation.navigate('Главная')} />
+            onPress={() => props.navigation.navigate('Главная')} />
+            <DrawerItem
+            label="История"
+            icon={({color, size}) => (
+              <Icon
+                name='book-open'
+                color={color}
+                size={size}
+              />
+            )}
+            onPress={() => props.navigation.navigate('История')}/>
             <DrawerItem
             label="Анализ данных"
             icon={({color, size}) => (
@@ -36,7 +45,7 @@ export function MainStakNavigator({navigation}) {
                 size={size}
               />
             )}
-            onPress={() => navigation.navigate('Анализ даннах')}/>
+            onPress={() => props.navigation.navigate('Анализ даннах')}/>
             <DrawerItem style={styles.bottomDrawerSection}
             label="Выход"
             icon={({color, size}) => (
@@ -50,13 +59,13 @@ export function MainStakNavigator({navigation}) {
           </DrawerContentScrollView>
         )}}
         >
-        <MainDrawer.Screen name={'Главная'} component={MainPage}/>
-        <MainDrawer.Screen name={'Анализ даннах'} component={AnaliticPage}/>
+        <MainDrawer.Screen name={'Главная'} component={MainPage} />
+        <MainDrawer.Screen name={'История'} component={HistoryPage} />
+        <MainDrawer.Screen name={'Анализ даннах'} component={AnaliticPage} />
 
       </MainDrawer.Navigator>
   );
 }
-// chart-bar
 
 const styles = StyleSheet.create({
   container: {

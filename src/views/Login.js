@@ -41,7 +41,7 @@ export function Login({navigation}) {
                 }
               }
               // setErrors(e.response.request._response)
-              console.log(e.response.request._response)
+              // console.log(e.response.request._response)
             }
           }}/>
         <TextButton title={'Регистрация'} onPress={() => {navigation.navigate('Registration')}}/>

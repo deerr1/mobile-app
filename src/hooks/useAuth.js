@@ -66,7 +66,7 @@ const [state, dispatch] = React.useReducer((state, action)=>{
   React.useEffect(()=>{
     sleep(1000).then(()=>{
       AsyncStorage.getItem('user').then( user => {
-        console.log('user', user);
+        // console.log('user', user);
         if (user !== null){
           dispatch(createAction('SET_USER', JSON.parse(user)));
         } else {
